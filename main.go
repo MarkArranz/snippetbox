@@ -27,6 +27,35 @@ func showSnippet(w http.ResponseWriter, r *http.Request) {
 
 // Add a createSnippet handler function.
 func createSnippet(w http.ResponseWriter, r *http.Request) {
+	// Use r.Method to check whether the request is using POST or not.
+	// If it's not, use the w.WriteHeader() method to send a 405 status code and
+	// the w.Write() method to write a "Method Not Allowed" response body. We
+	// then return from the function so that the subsequent code is not executed.
+	if r.Method != "POST" {
+		// Use the `Header().Set()` method to add an 'Allow: POST' header to the
+		// response header map. The first parameter is the header name, and
+		// the second paramenter is the header value.
+
+		// NOTE: Changing the header map after a call to `w.WriteHeader()` or
+		// `w.Write()` will have no effect on the response headers that the user receives.
+		// You need to make sure that your header map contains all the headers you want
+		// BEFORE you call these methods.
+		w.Header().Set("Allow", "POST")
+
+		// It's only possible to call w.WriteHeader() ONCE per response.
+		// After the status code has been written it can't be changed.
+		// If you try to call w.WriteHeader() a second time Go will log a warning message.
+
+		// If you don't call w.WriteHeader() explicitly, then the first call to
+		// w.Write() will autmatically send a `200 OK` status code to the user.
+
+		// So if you want to send a non-200 status code, you must call w.WriteHeader()
+		// BEFORE any call to w.Write().
+		w.WriteHeader(405)
+		w.Write([]byte("Method Not Allowed"))
+		return
+	}
+
 	w.Write([]byte("Create a new snippet..."))
 }
 
