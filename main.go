@@ -51,8 +51,17 @@ func createSnippet(w http.ResponseWriter, r *http.Request) {
 
 		// So if you want to send a non-200 status code, you must call w.WriteHeader()
 		// BEFORE any call to w.Write().
+		/**
 		w.WriteHeader(405)
 		w.Write([]byte("Method Not Allowed"))
+		*/
+
+		// Alternatively, if you want to send a non-200 status code and a plain-text
+		// response body then it's a good opportunity to use the `http.Error()` shortcut.
+
+		// Use the `http.Error()` function to send a 405 status code and "Method Not Allowed"
+		// string as the response body.
+		http.Error(w, "Method Not Allowed", 405)
 		return
 	}
 
